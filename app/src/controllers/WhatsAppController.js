@@ -4,6 +4,7 @@ class WhatsAppController {
         
         this.elementsPrototype();
         this.loadElements();
+        this.initEvents();
     }
 
     /**
@@ -24,6 +25,42 @@ class WhatsAppController {
     }
 
     /**
+     * Inicia todos os eventos.
+     */
+    initEvents() {
+
+        this.el.myPhoto.on('click', e => {
+            this.closeAllLeftPanels();
+            this.el.panelEditProfile.show();
+
+            // para dar tempo do elemento ser renderizado antes da animação
+            setTimeout(() => {
+
+                this.el.panelEditProfile.addClass('open');
+            }, 300); 
+        });
+
+        this.el.btnNewContact.on('click', e => {
+            this.closeAllLeftPanels();
+            this.el.panelAddContact.show();
+
+            // para dar tempo do elemento ser renderizado antes da animação
+            setTimeout(() => {
+
+                this.el.panelAddContact.addClass('open');
+            }, 300);
+        });
+
+        this.el.btnClosePanelEditProfile.on('click', e => {
+            this.el.panelEditProfile.removeClass('open');
+        });
+        
+        this.el.btnClosePanelAddContact.on('click', e => {
+            this.el.panelAddContact.removeClass('open');
+        });
+    }
+
+    /**
      * Adciona novos métodos na classe nativa Element.
      */
     elementsPrototype() {
@@ -40,7 +77,7 @@ class WhatsAppController {
         }
 
         Element.prototype.show = function() {
-            this.style.dislay = 'block';
+            this.style.display = 'block';
             return this;
         }
 
@@ -52,6 +89,7 @@ class WhatsAppController {
         Element.prototype.on = function(events, fn) {
 
             events.split(' ').forEach(event => {
+
                 this.addEventListener(event, fn);
             });
             return this;
@@ -84,5 +122,14 @@ class WhatsAppController {
         Element.prototype.hasClass = function(name) {
             return this.classList.contains(name);
         }
+    }
+
+    /**
+     * Esconde todos os painéis do lado esquerdo.
+     */
+    closeAllLeftPanels() {
+
+        this.el.panelAddContact.hide();
+        this.el.panelEditProfile.hide();
     }
 }
