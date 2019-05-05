@@ -35,6 +35,7 @@ Link para o repositório que contém os arquivos iniciais indicados no curso: [l
 **Algumas coisas interessantes aprendidas durante o projeto:**
 
 - Como buscar elementos com ID no html e criar referências a eles como propriedades de um objeto dinamicamente.
+- Criar métodos personalizados em classes nativas com Prototype.
 
 > Em progresso...
 
