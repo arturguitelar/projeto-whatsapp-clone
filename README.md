@@ -36,6 +36,8 @@ Link para o repositório que contém os arquivos iniciais indicados no curso: [l
 
 - Como buscar elementos com ID no html e criar referências a eles como propriedades de um objeto dinamicamente.
 - Criar métodos personalizados em classes nativas com Prototype.
+- Utilizar a classe FormData para recuperar os dados de um formulário pelo name dos campos.
+- Utilizar o prototype em HTMLFormElement para transformar os campos do formulário em um JSON.
 
 > Em progresso...
 

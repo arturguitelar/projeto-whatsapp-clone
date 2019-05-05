@@ -29,6 +29,8 @@ class WhatsAppController {
      */
     initEvents() {
 
+        /* === Painel de Perfil do lado esquerdo. === */
+
         this.el.myPhoto.on('click', e => {
             this.closeAllLeftPanels();
             this.el.panelEditProfile.show();
@@ -39,6 +41,33 @@ class WhatsAppController {
                 this.el.panelEditProfile.addClass('open');
             }, 300); 
         });
+
+        this.el.btnClosePanelEditProfile.on('click', e => {
+            this.el.panelEditProfile.removeClass('open');
+        });
+
+        this.el.photoContainerEditProfile.on('click', e => {
+            // força um click no input
+            this.el.inputProfilePhoto.click();
+        });
+
+        this.el.inputNamePanelEditProfile.on('keypress', e => {
+
+            if (e.key === 'Enter') {
+                
+                e.preventDefault();
+
+                this.el.btnSavePanelEditProfile.click();
+            }
+        });
+
+        this.el.btnSavePanelEditProfile.on('click', e => {
+            console.log(this.el.inputNamePanelEditProfile.innerHTML);
+            
+        });
+        /* === Fim - Painel de Perfil do lado esquerdo. === */
+
+        /* === Painel de nova conversa do lado esquerdo. === */
 
         this.el.btnNewContact.on('click', e => {
             this.closeAllLeftPanels();
@@ -51,17 +80,18 @@ class WhatsAppController {
             }, 300);
         });
 
-        this.el.btnClosePanelEditProfile.on('click', e => {
-            this.el.panelEditProfile.removeClass('open');
-        });
-        
         this.el.btnClosePanelAddContact.on('click', e => {
             this.el.panelAddContact.removeClass('open');
         });
+
+        this.el.formPanelAddContact.on('submit', e => {
+            let formData = this.el.formPanelAddContact.getForm();
+        });
+        /* === Fim - Painel de nova conversa do lado esquerdo. === */
     }
 
     /**
-     * Adciona novos métodos na classe nativa Element.
+     * Adciona novos métodos nas classes nativa Element e HTMLFormElement.
      */
     elementsPrototype() {
 
@@ -121,6 +151,20 @@ class WhatsAppController {
 
         Element.prototype.hasClass = function(name) {
             return this.classList.contains(name);
+        }
+
+        HTMLFormElement.prototype.getForm = function() {
+            return new FormData(this);
+        }
+
+        HTMLFormElement.prototype.toJSON = function() {
+            let json = {};
+
+            this.getForm().forEach((value, key) => {
+                json[key] = value;
+            });
+
+            return json;
         }
     }
 
