@@ -88,6 +88,48 @@ class WhatsAppController {
             let formData = this.el.formPanelAddContact.getForm();
         });
         /* === Fim - Painel de nova conversa do lado esquerdo. === */
+
+        /* === Parte de contatos do lado esquerdo === */
+        this.el.contactsMessagesList.querySelectorAll('.contact-item').forEach(item => {
+
+            item.on('click', e => {
+                
+                this.el.home.hide();
+
+                this.el.main.css({
+                    display: 'flex'
+                });
+            });
+        });
+        /* === Fim - Parte de contatos do lado esquerdo === */
+
+        /* === Janela de conversa === */
+        this.el.btnAttach.on('click', e => {
+
+            e.stopPropagation();
+            this.el.menuAttach.addClass('open');
+            // Nota: neste caso cria-se uma função nomeada para controle de document.removeListener
+            // O bind() indica o escopo do this, para que seja levado em consideração o próprio WhatsAppController
+            // ao invés do document, que seria o this padrão.
+            document.addEventListener('click', this.closeMenuAttach.bind(this));
+        });
+
+        this.el.btnAttachPhoto.on('click', el => {
+            console.log('photo');
+        });
+
+        this.el.btnAttachCamera.on('click', el => {
+            console.log('camera');
+        });
+
+        this.el.btnAttachContact.on('click', el => {
+            console.log('contact');
+        });
+
+        this.el.btnAttachDocument.on('click', el => {
+            console.log('document');
+        });
+        /* === Fim - Janela de conversa === */
     }
 
     /**
@@ -175,5 +217,13 @@ class WhatsAppController {
 
         this.el.panelAddContact.hide();
         this.el.panelEditProfile.hide();
+    }
+
+    /**
+     * Fecha o menu de ícones do botão de anexar (attach) arquivos.
+     */
+    closeMenuAttach(e) {
+        document.removeEventListener('click', this.closeMenuAttach);
+        this.el.menuAttach.removeClass('open');
     }
 }
