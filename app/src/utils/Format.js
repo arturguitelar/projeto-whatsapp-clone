@@ -1,5 +1,4 @@
-class Format
-{
+export class Format {
     /**
      * @param {String} text Texto no padrão de id css. Ex.: #meu-id
      * @return {String} Texto formatado em camelCase.
