@@ -44,6 +44,7 @@ Link para o repositório que contém os arquivos iniciais indicados no curso: [l
 - cloneNode(), dispatchEvent() e newEvent().
 - getSelection(), createRange() e DocumentFragment().
 - Api MediaDevices.
+- Webpack e Webpack Dev Server.
 
 > Em progresso...
 

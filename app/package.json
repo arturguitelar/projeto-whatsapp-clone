@@ -1,0 +1,30 @@
+{
+  "name": "whatsapp-clone",
+  "version": "1.0.0",
+  "description": "Projeto para estudo de javascript. Criação de um WhatsApp clone com base no curso da HCode.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arturguitelar/projeto-whatsapp-clone.git"
+  },
+  "keywords": [
+    "javascript",
+    "project",
+    "webpack",
+    "whatsapp",
+    "hcode"
+  ],
+  "author": "Artur Killdragon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arturguitelar/projeto-whatsapp-clone/issues"
+  },
+  "homepage": "https://github.com/arturguitelar/projeto-whatsapp-clone#readme",
+  "dependencies": {
+    "webpack": "^3.1.0",
+    "webpack-dev-server": "^2.5.1"
+  }
+}
