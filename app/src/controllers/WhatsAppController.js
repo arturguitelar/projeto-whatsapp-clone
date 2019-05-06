@@ -224,7 +224,42 @@ class WhatsAppController {
         this.el.panelEmojis.querySelectorAll('.emojik').forEach(emoji => {
             
             emoji.on('click', e => {
-                console.log(emoji.dataset.unicode);
+                
+                // Nota: imgEmojiDefault está escondido no layout e será clonado.
+                // O clone irá receber as propriedades do emoji que foi clicado.
+                let img = this.el.imgEmojiDefault.cloneNode();
+
+                img.style.cssText = emoji.style.cssText;
+                img.dataset.unicode = emoji.dataset.ubicode;
+                img.alt = emoji.dataset.unicode;
+
+                emoji.classList.forEach(name => {
+                    img.classList.add(name);
+                });
+
+                let cursor = window.getSelection();
+
+                if (!cursor.focusNode || !cursor.focusNode.id == 'input-text') {
+                    
+                    this.el.inputText.focus();
+                    cursor = window.getSelection();
+                }
+
+                // É preciso pegar o range da seleção e deletar o texto.
+                let range = document.createRange();
+
+                range = cursor.getRangeAt(0);
+                range.deleteContents();
+
+                // E então cria-se um fragmento para colocar o emoji onde o cursor está apontando.
+                let frag = document.createDocumentFragment();
+
+                frag.appendChild(img);
+
+                range.insertNode(frag);
+                range.setStartAfter(img);
+
+                this.el.inputText.dispatchEvent(new Event('keyup'));
             });
         });
         /* === Fim - Janela de conversa === */

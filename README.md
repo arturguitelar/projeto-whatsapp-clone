@@ -41,6 +41,8 @@ Link para o repositório que contém os arquivos iniciais indicados no curso: [l
 - Utilizando o bind() para definir escopo do this.
 - Propagação de eventos e removeEventListener().
 - Spread Operators.
+- cloneNode(), dispatchEvent() e newEvent().
+- getSelection(), createRange() e DocumentFragment().
 
 > Em progresso...
 
