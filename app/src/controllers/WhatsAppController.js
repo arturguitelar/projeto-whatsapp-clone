@@ -114,20 +114,65 @@ class WhatsAppController {
             document.addEventListener('click', this.closeMenuAttach.bind(this));
         });
 
-        this.el.btnAttachPhoto.on('click', el => {
-            console.log('photo');
+        this.el.btnAttachPhoto.on('click', e => {
+            
+            this.el.inputPhoto.click();
         });
 
-        this.el.btnAttachCamera.on('click', el => {
-            console.log('camera');
+        this.el.inputPhoto.on('change', e => {
+
+            // Nota: this.el.inputPhoto.files retorna uma collection FileList (typeof object)
+            // e precisa ser transformado em um array. FileList não possui o método forEach().
+            [...this.el.inputPhoto.files].forEach(file => {
+                console.log(file);
+            });
         });
 
-        this.el.btnAttachContact.on('click', el => {
-            console.log('contact');
+        this.el.btnAttachCamera.on('click', e => {
+            
+            this.closeAllMainPanels();
+            
+            this.el.panelCamera.addClass('open');
+            this.el.panelCamera.css({
+                height: 'calc(100% - 120px)'
+            });
         });
 
-        this.el.btnAttachDocument.on('click', el => {
-            console.log('document');
+        this.el.btnClosePanelCamera.on('click', e => {
+
+            this.closeAllMainPanels();
+            this.el.panelMessagesContainer.show();
+        });
+
+        this.el.btnTakePicture.on('click', e => {
+            console.log('take picture');
+        });
+
+        this.el.btnAttachDocument.on('click', e => {
+
+            this.closeAllMainPanels();          
+            this.el.panelDocumentPreview.addClass('open');
+            this.el.panelDocumentPreview.css({
+                height: 'calc(100% - 120px)'
+            });
+        });
+
+        this.el.btnClosePanelDocumentPreview.on('click', e => {
+
+            this.closeAllMainPanels();
+            this.el.panelMessagesContainer.show();
+        });
+
+        this.el.btnSendDocument.on('click', e => {
+            console.log('send document');
+        });
+
+        this.el.btnAttachContact.on('click', e => {
+            this.el.modalContacts.show();
+        });
+
+        this.el.btnCloseModalContacts.on('click', e => {
+            this.el.modalContacts.hide();
         });
         /* === Fim - Janela de conversa === */
     }
@@ -208,6 +253,16 @@ class WhatsAppController {
 
             return json;
         }
+    }
+
+    /**
+     * Fecha todos os painéis principais da parte do chat.
+     */
+    closeAllMainPanels() {
+
+        this.el.panelMessagesContainer.hide();
+        this.el.panelDocumentPreview.removeClass('open');
+        this.el.panelCamera.removeClass('open');
     }
 
     /**

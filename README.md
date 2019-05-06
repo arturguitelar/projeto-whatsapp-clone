@@ -40,6 +40,7 @@ Link para o repositório que contém os arquivos iniciais indicados no curso: [l
 - Utilizar o prototype em HTMLFormElement para transformar os campos do formulário em um JSON.
 - Utilizando o bind() para definir escopo do this.
 - Propagação de eventos e removeEventListener().
+- Spread Operators.
 
 > Em progresso...
 
