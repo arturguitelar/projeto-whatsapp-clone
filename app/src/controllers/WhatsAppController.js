@@ -174,7 +174,76 @@ class WhatsAppController {
         this.el.btnCloseModalContacts.on('click', e => {
             this.el.modalContacts.hide();
         });
+
+        this.el.btnSendMicrophone.on('click', e => {
+            
+            this.el.recordMicrophone.show();
+            this.el.btnSendMicrophone.hide();
+
+            this.startRecordMicrophoneTime();
+        });
+
+        this.el.btnCancelMicrophone.on('click', e => {
+            this.closeRecordMicrophone();
+        });
+
+        this.el.btnFinishMicrophone.on('click', e => {
+            this.closeRecordMicrophone();
+        });
         /* === Fim - Janela de conversa === */
+    }
+
+    /**
+     * Inicia o cronômetro de contagem da gravação do microphone.
+     */
+    startRecordMicrophoneTime() {
+
+        let start = Date.now();
+
+        this._recordMicrophoneInterval = setInterval(()=> {
+
+            this.el.recordMicrophoneTimer.innerHTML = Format.toTime(Date.now() - start);
+        }, 100); // 100 = 10x por segundo
+    }
+
+    /**
+     * Fecha todos os painéis principais da parte do chat.
+     */
+    closeAllMainPanels() {
+
+        this.el.panelMessagesContainer.hide();
+        this.el.panelDocumentPreview.removeClass('open');
+        this.el.panelCamera.removeClass('open');
+    }
+
+    /**
+     * Esconde todos os painéis do lado esquerdo.
+     */
+    closeAllLeftPanels() {
+
+        this.el.panelAddContact.hide();
+        this.el.panelEditProfile.hide();
+    }
+
+    /**
+     * Fecha o menu de ícones do botão de anexar (attach) arquivos.
+     */
+    closeMenuAttach(e) {
+        document.removeEventListener('click', this.closeMenuAttach);
+        this.el.menuAttach.removeClass('open');
+    }
+
+    /**
+     * Fecha telinha da gravação do microfone.
+     */
+    closeRecordMicrophone() {
+        // para a contagem de tempo do microphone
+        clearInterval(this._recordMicrophoneInterval);
+
+        this.el.recordMicrophoneTimer.innerHTML = '0:00';
+        
+        this.el.recordMicrophone.hide();
+        this.el.btnSendMicrophone.show();
     }
 
     /**
@@ -253,32 +322,5 @@ class WhatsAppController {
 
             return json;
         }
-    }
-
-    /**
-     * Fecha todos os painéis principais da parte do chat.
-     */
-    closeAllMainPanels() {
-
-        this.el.panelMessagesContainer.hide();
-        this.el.panelDocumentPreview.removeClass('open');
-        this.el.panelCamera.removeClass('open');
-    }
-
-    /**
-     * Esconde todos os painéis do lado esquerdo.
-     */
-    closeAllLeftPanels() {
-
-        this.el.panelAddContact.hide();
-        this.el.panelEditProfile.hide();
-    }
-
-    /**
-     * Fecha o menu de ícones do botão de anexar (attach) arquivos.
-     */
-    closeMenuAttach(e) {
-        document.removeEventListener('click', this.closeMenuAttach);
-        this.el.menuAttach.removeClass('open');
     }
 }
