@@ -43,6 +43,7 @@ Link para o repositório que contém os arquivos iniciais indicados no curso: [l
 - Spread Operators.
 - cloneNode(), dispatchEvent() e newEvent().
 - getSelection(), createRange() e DocumentFragment().
+- Api MediaDevices.
 
 > Em progresso...
 
