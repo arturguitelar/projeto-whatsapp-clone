@@ -7,11 +7,20 @@ export class CameraController {
             video: true
         }).then(stream => {
             
-            this.stream = stream;
+            this._stream = stream;
             this._videoEl.srcObject = stream;
             this._videoEl.play();
         }).catch(err => {
             console.error(err);
+        });
+    }
+
+    /**
+     * Pára a câmera.
+     */
+    stop() {
+        this._stream.getTracks().forEach(track => {
+            track.stop();
         });
     }
 }

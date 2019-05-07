@@ -147,6 +147,7 @@ export class WhatsAppController {
 
             this.closeAllMainPanels();
             this.el.panelMessagesContainer.show();
+            this._camera.stop();
         });
 
         this.el.btnTakePicture.on('click', e => {
