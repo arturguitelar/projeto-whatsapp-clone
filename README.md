@@ -45,6 +45,7 @@ Link para o repositório que contém os arquivos iniciais indicados no curso: [l
 - getSelection(), createRange() e DocumentFragment().
 - Api MediaDevices.
 - Webpack e Webpack Dev Server.
+- PDF.js (utilizando o conceito de workers).
 
 > Em progresso...
 
