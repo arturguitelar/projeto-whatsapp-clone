@@ -268,14 +268,16 @@ export class WhatsAppController {
             this.el.recordMicrophone.show();
             this.el.btnSendMicrophone.hide();
 
-            this.startRecordMicrophoneTime();
-
             this._microphoneController = new MicrophoneController();
 
             this._microphoneController.on('ready', audio => {
                 
                 console.log('ready event');
                 this._microphoneController.startRecorder();
+            });
+
+            this._microphoneController.on('recordtimer', timer => {
+                this.el.recordMicrophoneTimer.innerHTML = Format.toTime(timer);
             });
         });
 
@@ -366,19 +368,6 @@ export class WhatsAppController {
     }
 
     /**
-     * Inicia o cronômetro de contagem da gravação do microphone.
-     */
-    startRecordMicrophoneTime() {
-
-        let start = Date.now();
-
-        this._recordMicrophoneInterval = setInterval(()=> {
-
-            this.el.recordMicrophoneTimer.innerHTML = Format.toTime(Date.now() - start);
-        }, 100); // 100 = 10x por segundo
-    }
-
-    /**
      * Fecha todos os painéis principais da parte do chat.
      */
     closeAllMainPanels() {
@@ -409,9 +398,6 @@ export class WhatsAppController {
      * Fecha telinha da gravação do microfone.
      */
     closeRecordMicrophone() {
-        // para a contagem de tempo do microphone
-        clearInterval(this._recordMicrophoneInterval);
-
         this.el.recordMicrophoneTimer.innerHTML = '0:00';
         
         this.el.recordMicrophone.hide();
