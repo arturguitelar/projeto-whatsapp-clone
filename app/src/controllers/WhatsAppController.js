@@ -24,18 +24,42 @@ export class WhatsAppController {
         this._firebase.initAuth()
             .then(response => {
 
-                this._user = new User();
+                this._user = new User(response.user.email);
 
-                let userRef = User.findByEmail(response.user.email);
+                // toda alteração no usuário será observada pelo evento em tempo real
+                this._user.on('datachange', data => {
+                    document.querySelector('title').innerHTML = data.name + ' - WhatsApp Clone';
 
-                userRef.set({
-                    name: response.user.displayName,
-                    email: response.user.email,
-                    photo: response.user.photoURL
-                }).then(() => {
-                    this.el.appContent.css({ display: 'flex' });
+                    // lembrete: inputName é uma div
+                    this.el.inputNamePanelEditProfile.innerHTML = data.name;
+
+                    if (data.photo) {
+
+                        // muda a imagem do painel de perfil
+                        let photo = this.el.imgPanelEditProfile;
+                        photo.src = data.photo;
+
+                        this.el.imgDefaultPanelEditProfile.hide();
+                        photo.show();
+
+                        // muda a imagem do header
+                        let photoHeader = this.el.myPhoto.querySelector('img');
+                        photoHeader.src = data.photo;
+                        photoHeader.show();
+
+                    }
                 });
 
+                // salvando os dados
+                this._user.name = response.user.displayName;
+                this._user.email = response.user.email;
+                this._user.photo = response.user.photoURL;
+                this._user.save().then(() => {
+                    
+                    this.el.appContent.css({
+                        display: 'flex'
+                    });
+                });
             })
             .catch(err => {
                 console.error(err);

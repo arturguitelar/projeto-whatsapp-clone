@@ -16,7 +16,7 @@ export class ClassEvent {
     }
 
     /**
-     * Cria um trigger para a escuta de eventos específios.
+     * Cria um trigger para a escuta de eventos específicos.
      * 
      * - Aceita o primeiro parâmetro como o nome {String} de um evento e os parâmetros
      * consecutivos como argumentos, que serão executados caso sejam funções.
