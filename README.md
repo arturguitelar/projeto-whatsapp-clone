@@ -50,6 +50,7 @@ Link para o repositório que contém os arquivos iniciais indicados no curso: [l
 - Criação de triggers para eventos.
 - Módulo Firebase instalado via NPM e configuração.*1
 - Firebase Cloud Firestore e Firebase Storage.
+- MVC.
 
 *1 - Obs: O arquivo da classe "FirebaseConfig.js" (onde coloquei as configurações do meu projeto no Firebase) não será adicionado ao projeto no github por motivos de segurança.
 
