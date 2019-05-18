@@ -22,6 +22,34 @@ export class User extends Model {
     /* -- fim - Getters & Setters -- */
 
     /**
+     * Pega uma referência para usuários no Firebase.
+     * @return { firebase.firestore.CollectionReference } Uma instância de CollectionReference.
+     */
+    static getRef() {
+        return Firebase.db().collection('/users');
+    }
+
+    /**
+     * Retorna uma referência de Contatos de um usuário.
+     * @param { String } id
+     * @return { Promise } Contatos do usuário solicitado.
+     */
+    static getContactsRef(id) {
+        return User.getRef()
+            .doc(id)
+            .collection('contacts');
+    }
+
+    /**
+     * Busca na referência um email especificado.
+     * @param {String} email
+     * @return {firebase.firestore.DocumentReference} Uma instância de DocumentReference.
+     */
+    static findByEmail(email) {
+        return User.getRef().doc(email);
+    }
+
+    /**
      * Busca um documento salvo no database por um id especificado.
      * @param {*} id 
      * @return {Promise} Documento salvo no Firebase.
@@ -98,37 +126,9 @@ export class User extends Model {
                 });
 
                 this.trigger('contactschange', docs);
-                
+
                 s(contacts);
             });
         });
-    }
-
-    /**
-     * Pega uma referência para usuários no Firebase.
-     * @return { firebase.firestore.CollectionReference } Uma instância de CollectionReference.
-     */
-    static getRef() {
-        return Firebase.db().collection('/users');
-    }
-
-    /**
-     * Retorna uma referência de Contatos de um usuário.
-     * @param { String } id
-     * @return { Promise } Contatos do usuário solicitado.
-     */
-    static getContactsRef(id) {
-        return User.getRef()
-            .doc(id)
-            .collection('contacts');
-    }
-
-    /**
-     * Busca na referência um email especificado.
-     * @param {String} email
-     * @return {firebase.firestore.DocumentReference} Uma instância de DocumentReference.
-     */
-    static findByEmail(email) {
-        return User.getRef().doc(email);
     }
 }
