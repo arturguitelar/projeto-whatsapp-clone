@@ -70,11 +70,38 @@ export class User extends Model {
 
         // Nota: o email do contato está sendo convertido para base64 
         // pois poderá utilzado em funções como busca.
-        return User.getRef()
-            .doc(this.email)
-            .collection('contacts')
+        return User.getContactsRef(this.email)
             .doc(btoa(contact.email))
             .set(contact.toJSON());
+    }
+
+    /**
+     * - Retorna contatos de um usuário.
+     * - Notifica quem está esperando alguma modificação nos contatos.
+     * @return { Promise } Contatos de um usuário.
+     */
+    getContacts() {
+        
+        return new Promise((s, f) => {
+            
+            User.getContactsRef(this.email).onSnapshot(docs => {
+
+                let contacts = [];
+
+                docs.forEach(doc => {
+                    
+                    let data = doc.data();
+
+                    data.id = doc.id;
+
+                    contacts.push(data);
+                });
+
+                this.trigger('contactschange', docs);
+                
+                s(contacts);
+            });
+        });
     }
 
     /**
@@ -83,6 +110,17 @@ export class User extends Model {
      */
     static getRef() {
         return Firebase.db().collection('/users');
+    }
+
+    /**
+     * Retorna uma referência de Contatos de um usuário.
+     * @param { String } id
+     * @return { Promise } Contatos do usuário solicitado.
+     */
+    static getContactsRef(id) {
+        return User.getRef()
+            .doc(id)
+            .collection('contacts');
     }
 
     /**
