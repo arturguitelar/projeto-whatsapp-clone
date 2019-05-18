@@ -62,6 +62,22 @@ export class User extends Model {
     }
 
     /**
+     * Adiciona um contato em um usuário.
+     * @param { User } contact
+     * @return { Promise } Contato adicionado.
+     */
+    addContact(contact) {
+
+        // Nota: o email do contato está sendo convertido para base64 
+        // pois poderá utilzado em funções como busca.
+        return User.getRef()
+            .doc(this.email)
+            .collection('contacts')
+            .doc(btoa(contact.email))
+            .set(contact.toJSON());
+    }
+
+    /**
      * Pega uma referência para usuários no Firebase.
      * @return { firebase.firestore.CollectionReference } Uma instância de CollectionReference.
      */

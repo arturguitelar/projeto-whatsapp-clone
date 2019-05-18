@@ -22,7 +22,7 @@ export class Model extends ClassEvent {
     }
 
     /**
-     * Gera um JSON.
+     * Gera um JSON com os dados de um modelo.
      * @return { JSON } JSON com os dados.
      */
     toJSON() {
