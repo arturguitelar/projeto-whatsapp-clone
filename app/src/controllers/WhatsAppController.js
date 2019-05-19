@@ -561,6 +561,11 @@ export class WhatsAppController {
      */
     setActiveChat(contact) {
 
+        // zera o oneSnapshot do último contato ativo
+        if (this._contactActive) {
+            Message.getRef(this._contactActive.chatId).onSnapshot(() => {});
+        }
+
         this._contactActive = contact;
         
         this.el.activeName.innerHTML = contact.name;
@@ -578,6 +583,35 @@ export class WhatsAppController {
         this.el.main.css({
             display: 'flex'
         });
+
+        // mostrando as mensagens
+        Message.getRef(this._contactActive.chatId)
+            .orderBy('timeStamp')
+            .onSnapshot(docs => {
+
+                this.el.panelMessagesContainer.innerHTML = '';
+
+                docs.forEach(doc => {
+                    let data = doc.data();
+
+                    data.id = doc.id;
+
+                    // verificando se não existe uma mensagem com o mesmo id
+                    // para atualizar na view só o que for necessário.
+                    if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
+
+                        let message = new Message();
+
+                        message.fromJSON(data);
+                        
+                        let me = (data.from === this._user.mail);
+    
+                        let view = message.getViewElement(me);
+    
+                        this.el.panelMessagesContainer.appendChild(view);
+                    }
+                });
+            });
     }
 
     /**

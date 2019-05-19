@@ -26,4 +26,23 @@ export class Format {
             return `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
     }
+
+    /**
+     * @param {*} timeStamp TimeStamp do Firebase.
+     * @return {String} Hora formatada.
+     */
+    static timeStampToTime(timeStamp) {
+        return (timeStamp && typeof timeStamp.toDate === 'function') ? Format.dateToTime(timeStamp.toDate()) : '';
+    }
+
+    /**
+     * @param {*} date Data.
+     * @return {String} Data formatada com locale.
+     */
+    static dateToTime(date, locale = 'pt-BR') {
+        return date.toLocaleTimeString(locale, {
+            hours: '2-digit',
+            minutes: '2-digit'
+        });
+    }
 }
