@@ -1,4 +1,5 @@
 import { Model } from "./Model";
+import { Firebase } from "../utils/Firebase";
 
 export class Message extends Model {
 
@@ -19,6 +20,38 @@ export class Message extends Model {
     get status() {  return this._data.status; }
     set status(value) { this._data.status = value; }
     /* -- fim - Getters & Setters -- */
+
+    /**
+     * Retorna uma instância da collection `messages`.
+     * @param { String } id ID do chat.
+     * @return Uma instância de `CollectionReference`.
+     */
+    static getRef(id) {
+
+        return Firebase.db()
+            .collection('/chats')
+            .doc(id)
+            .collection('/messages');
+    }
+    
+    /**
+     * Envia uma mensagem de um usuário especificado.
+     * @param { String } chatId ID do chat.
+     * @param {*} from Para onde.
+     * @param { String } type Tipo de mensagem
+     * @param {*} content Conteúdo da mensagem.
+     * @return Mensagem.
+     */
+    static send(chatId, from, type, content) {
+
+        return Message.getRef(chatId).add({
+            content,
+            timeStamp: new Date(),
+            status: 'wait',
+            type,
+            from
+        });
+    }
 
     /**
      * Retorna uma view de mensagem de acordo com o tipo de mensagem.

@@ -4,6 +4,7 @@ import { MicrophoneController } from './MicrophoneController';
 import { DocumentPreviewController } from './DocumentPreviewController';
 import { Firebase } from './../utils/Firebase';
 import { User } from '../models/User';
+import { Message } from '../models/Message';
 import { Chat } from '../models/Chat';
 
 export class WhatsAppController {
@@ -148,21 +149,7 @@ export class WhatsAppController {
                 // click para mostrar a tela de conversa deste contato
                 div.on('click', e => {
 
-                    this.el.activeName.innerHTML = contact.name;
-                    this.el.activeStatus.innerHTML = contact.status;
-
-                    if (contact.photo) {
-                        let img = this.el.activePhoto;
-
-                        img.src = contact.photo;
-                        img.show();
-                    }
-
-                    this.el.home.hide();
-
-                    this.el.main.css({
-                        display: 'flex'
-                    });
+                    this.setActiveChat(contact);
                 });
 
                 this.el.contactsMessagesList.appendChild(div);
@@ -508,7 +495,16 @@ export class WhatsAppController {
         });
 
         this.el.btnSend.on('click', e => {
-            console.log(this.el.inputText.innerHTML);
+            
+            Message.send(
+                this._contactActive.chatId,
+                this._user.email,
+                'text',
+                this.el.inputText.innerHTML
+            );
+
+            this.el.inputText.innerHTML = '';
+            this.el.panelEmojis.removeClass('open');
         });
 
         this.el.btnEmojis.on('click', e => {
@@ -557,6 +553,31 @@ export class WhatsAppController {
             });
         });
         /* === Fim - Janela de conversa === */
+    }
+
+    /**
+     * Ativa o painel de mensagens de um contato especificado.
+     * @param { String } contact Contato.
+     */
+    setActiveChat(contact) {
+
+        this._contactActive = contact;
+        
+        this.el.activeName.innerHTML = contact.name;
+        this.el.activeStatus.innerHTML = contact.status;
+
+        if (contact.photo) {
+            let img = this.el.activePhoto;
+
+            img.src = contact.photo;
+            img.show();
+        }
+
+        this.el.home.hide();
+
+        this.el.main.css({
+            display: 'flex'
+        });
     }
 
     /**
