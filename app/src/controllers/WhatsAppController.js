@@ -604,7 +604,7 @@ export class WhatsAppController {
 
                         message.fromJSON(data);
                         
-                        let me = (data.from === this._user.mail);
+                        let me = (data.from === this._user.email);
     
                         let view = message.getViewElement(me);
     
