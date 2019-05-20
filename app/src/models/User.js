@@ -109,13 +109,14 @@ export class User extends Model {
     /**
      * - Retorna contatos de um usuário.
      * - Notifica quem está esperando alguma modificação nos contatos.
+     * @param { String } filter (opcional)
      * @return { Promise } Contatos de um usuário.
      */
-    getContacts() {
+    getContacts(filter = '') {
         
         return new Promise((s, f) => {
             
-            User.getContactsRef(this.email).onSnapshot(docs => {
+            User.getContactsRef(this.email).where('name', '>=', filter).onSnapshot(docs => {
 
                 let contacts = [];
 
