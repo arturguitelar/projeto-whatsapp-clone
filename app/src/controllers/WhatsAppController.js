@@ -475,6 +475,8 @@ export class WhatsAppController {
         this.el.inputText.on('keypress', e => {
             
             if (e.key === 'Enter' && !e.ctrlKey) {
+                
+                e.preventDefault();
                 this.el.btnSend.click();
             }
         });
@@ -496,12 +498,15 @@ export class WhatsAppController {
 
         this.el.btnSend.on('click', e => {
             
-            Message.send(
-                this._contactActive.chatId,
-                this._user.email,
-                'text',
-                this.el.inputText.innerHTML
-            );
+            if(this.el.inputText.innerHTML !== '') {
+
+                Message.send(
+                    this._contactActive.chatId,
+                    this._user.email,
+                    'text',
+                    this.el.inputText.innerHTML
+                );
+            }
 
             this.el.inputText.innerHTML = '';
             this.el.panelEmojis.removeClass('open');
