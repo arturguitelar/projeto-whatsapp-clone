@@ -619,19 +619,31 @@ export class WhatsAppController {
 
                     data.id = doc.id;
 
+                    let message = new Message();
+
+                    message.fromJSON(data);
+                    
+                    let me = (data.from === this._user.email);
+                    
                     // verificando se não existe uma mensagem com o mesmo id
                     // para atualizar na view só o que for necessário.
                     if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
 
-                        let message = new Message();
-
-                        message.fromJSON(data);
-                        
-                        let me = (data.from === this._user.email);
+                        if (!me) {
+                            doc.ref.set({
+                                status: 'read'
+                            }, {
+                                merge: true
+                            });
+                        }
     
                         let view = message.getViewElement(me);
     
                         this.el.panelMessagesContainer.appendChild(view);
+                    } else if (me) {
+
+                        let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
+                        msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
                     }
                 });
                 
