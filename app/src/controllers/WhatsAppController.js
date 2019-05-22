@@ -366,7 +366,62 @@ export class WhatsAppController {
         });
 
         this.el.btnSendPicture.on('click', e => {
-            console.log(this.el.pictureCamera.src);
+
+            this.el.btnSendPicture.disabled = true;
+
+            let regex = /^data:(.+);base64,(.*)$/;
+            let result = this.el.pictureCamera.src.match(regex);
+            /* Nota:
+                Neste caso, o resultado (result) vem separado em um array com 3 posições:
+                0 - string completa (no caso, o b64 da foto);
+                1 - primeira parte encontrada. (.+) - por exemplo "image/png"
+                2 - segunda parte encontrada. (.*) - o restante da string em b64
+                
+                console.log(result);
+            */
+            let mimeType = result[1]; // image/png
+            let ext = mimeType.split('/')[1] // png
+            let filename = `camera_${Date.now()}.${ext}`; // ex.: camera_00:00:00.png
+
+            /* Nota²:
+                A câmera gera uma imagem invertida. É preciso "desinverter" esta imagem antes do envio.
+             */
+            let picture = new Image();
+            picture.src = this.el.pictureCamera.src;
+
+            picture.onload = e => {
+
+                let canvas = document.createElement('canvas');
+                let context = canvas.getContext('2d');
+
+                canvas.width = picture.width;
+                canvas.height = picture.height;
+
+                context.translate(picture.width, 0);
+                context.scale(-1, 1); // inverte a imagem
+
+                context.drawImage(picture, 0, 0, canvas.width, canvas.height);
+
+                fetch(canvas.toDataURL(mimeType))
+                    .then(res => { return res.arrayBuffer(); })
+                    .then(buffer => { return new File([buffer], filename, { mime: mimeType }); })
+                    .then(file => {
+
+                        Message.sendImage(this._contactActive.chatId, this._user.email, file);
+
+                        this.closeAllMainPanels();
+                        this._camera.stop(); // pára de gravar
+                        
+                        this.el.btnReshootPanelCamera.hide();
+                        this.el.pictureCamera.hide();
+                        this.el.videoCamera.show();
+                        this.el.containerSendPicture.hide();
+                        this.el.containerTakePicture.show();
+                        this.el.panelMessagesContainer.show();
+                        
+                        this.el.btnSendPicture.disabled = true;
+                    });
+            };
         });
 
         this.el.btnAttachDocument.on('click', e => {

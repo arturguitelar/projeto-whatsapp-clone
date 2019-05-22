@@ -40,9 +40,9 @@ export class Message extends Model {
 
     /**
      * Envia uma imagem para o Storage.
-     * @param { String } chatId ID do chat.
-     * @param {*} from De onde.
-     * @return { Promise } Mensagem com imagem.
+     * @param { String } chatId ID do chat. "Para onde".
+     * @param {*} from Quem está enviando. "De onde".
+     * @return { Promise } Mensagem com imagem. "Conteúdo".
      */
     static sendImage(chatId, from, file) {
 
@@ -77,11 +77,11 @@ export class Message extends Model {
     
     /**
      * Envia uma mensagem de um usuário especificado.
-     * @param { String } chatId ID do chat.
-     * @param {*} from De onde.
-     * @param { String } type Tipo de mensagem
+     * @param { String } chatId ID do chat. "Para onde".
+     * @param {*} from Quem está enviando. "De onde".
+     * @param { String } type Tipo de mensagem.
      * @param {*} content Conteúdo da mensagem.
-     * @return { Promise } Mensagem.
+     * @return { Promise } Mensagem enviada.
      */
     static send(chatId, from, type, content) {
 
