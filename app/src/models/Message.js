@@ -37,6 +37,43 @@ export class Message extends Model {
             .doc(id)
             .collection('/messages');
     }
+
+    /**
+     * Envia uma imagem para o Storage.
+     * @param { String } chatId ID do chat.
+     * @param {*} from De onde.
+     * @return { Promise } Mensagem com imagem.
+     */
+    static sendImage(chatId, from, file) {
+
+        return new Promise((s, f) => {
+            
+            // fazendo upload do arquivo para o Firestore
+            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
+    
+            uploadTask.on('state_changed', e => {
+                console.info('upload', e);
+            }, err => {
+                console.error(err);
+            }, () => {
+                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                    Message.send(
+                        chatId, 
+                        from, 
+                        'image', 
+                        downloadURL
+                    ).then(() => {
+                        s();
+                    }).catch(err => {
+                        f(err);
+                    });
+                }).catch(err => {
+                    f(err);
+                });;
+            });
+
+        })
+    }
     
     /**
      * Envia uma mensagem de um usuário especificado.
@@ -44,7 +81,7 @@ export class Message extends Model {
      * @param {*} from De onde.
      * @param { String } type Tipo de mensagem
      * @param {*} content Conteúdo da mensagem.
-     * @return Mensagem.
+     * @return { Promise } Mensagem.
      */
     static send(chatId, from, type, content) {
 
@@ -143,13 +180,8 @@ export class Message extends Model {
                                             </div>
                                         </div>
                                     </div>
-                                    <img src="#" class="_1JVSX message-photo" style="width: 100%; display:none">
+                                    <img src="${this.content}" class="_1JVSX message-photo" style="width: 100%; display:none">
                                     <div class="_1i3Za"></div>
-                                </div>
-                                <div class="message-container-legend">
-                                    <div class="_3zb-j ZhF0n">
-                                        <span dir="ltr" class="selectable-text invisible-space copyable-text message-text">Texto da foto</span>
-                                    </div>
                                 </div>
                                 <div class="_2TvOE">
                                     <div class="_1DZAH text-white" role="button">
@@ -170,6 +202,14 @@ export class Message extends Model {
                         </div>
                     </div>
                 `;
+
+                // evento de loading da foto
+                div.querySelector('.message-photo').on('load', e => {
+                    
+                    div.querySelector('.message-photo').show();
+                    div.querySelector('._34Olu').hide();
+                    div.querySelector('._3v3PK').css({ height: 'auto' });
+                });
             break;
 
             case 'document':

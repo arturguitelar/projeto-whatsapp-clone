@@ -319,7 +319,8 @@ export class WhatsAppController {
             // Nota: this.el.inputPhoto.files retorna uma collection FileList (typeof object)
             // e precisa ser transformado em um array. FileList não possui o método forEach().
             [...this.el.inputPhoto.files].forEach(file => {
-                console.log(file);
+                
+                Message.sendImage(this._contactActive.chatId, this._user.email, file);
             });
         });
 
