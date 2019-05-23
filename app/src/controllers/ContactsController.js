@@ -2,12 +2,13 @@ import { ClassEvent } from "../utils/ClassEvent";
 
 export class ContactsController extends ClassEvent {
 
-    constructor(modalEl, user, listEl) {
+    constructor(modalEl, user, contactActive, listEl) {
         
         super();
 
         this._modalEl = modalEl;
         this._user = user;
+        this._contactActive = contactActive;
         this._listEl = listEl;
     }
 
@@ -21,6 +22,8 @@ export class ContactsController extends ClassEvent {
             this._listEl.innerHTML = '';
 
             contacts.forEach(contact => {
+
+                if (contact.email === this._contactActive.email) return;
                 
                 let div = document.createElement('div');
 

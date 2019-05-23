@@ -533,6 +533,7 @@ export class WhatsAppController {
             this._contactsController = new ContactsController(
                 this.el.modalContacts,
                 this._user,
+                this._contactActive,
                 this.el.contactList
             );
 
@@ -744,13 +745,41 @@ export class WhatsAppController {
                         this.el.panelMessagesContainer.appendChild(view);                        
                     } else {
 
-                        idElm.innerHTML = view.innerHTML;
+                        let parent = idElm.parentNode;
+
+                        parent.replaceChild(view, idElm);
                     } 
                     
                     if (idElm && me) {
 
                         let msgEl = idElm;
                         msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
+                    }
+
+                    // configurando o click no botão de "enviar mensagem", localizado no contato dentro do chat
+                    if (message.type === 'contact') {
+
+                        // Adicionando o contato recebido à própria lista.
+                        view.querySelector('.btn-message-send').on('click', e => {
+                            
+                            Chat.createIfNotExists(this._user.email, message.content.email).then(chat => {
+                                
+                                let contact = new User(message.content.email);
+
+                                contact.on('datachange', data => {
+
+                                    contact.chatId = chat.id;
+
+                                    this._user.addContact(contact);
+                                    
+                                    this._user.chatId = chat.id;
+                                    
+                                    contact.addContact(this._user);
+
+                                    this.setActiveChat(contact);
+                                });
+                            });
+                        });
                     }
                 });
                 
