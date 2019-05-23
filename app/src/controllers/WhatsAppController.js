@@ -7,6 +7,7 @@ import { User } from '../models/User';
 import { Message } from '../models/Message';
 import { Chat } from '../models/Chat';
 import { Base64 } from '../utils/Base64';
+import { ContactsController } from './ContactsController';
 
 export class WhatsAppController {
     
@@ -528,11 +529,28 @@ export class WhatsAppController {
         });
 
         this.el.btnAttachContact.on('click', e => {
-            this.el.modalContacts.show();
+
+            this._contactsController = new ContactsController(
+                this.el.modalContacts,
+                this._user,
+                this.el.contactList
+            );
+
+            this._contactsController.on('select', contact => {
+
+                Message.sendContact(
+                    this._contactActive.chatId,
+                    this._user.email,
+                    contact
+                );
+            });
+
+            this._contactsController.open();
         });
 
         this.el.btnCloseModalContacts.on('click', e => {
-            this.el.modalContacts.hide();
+            
+            this._contactsController.close();
         });
 
         this.el.btnSendMicrophone.on('click', e => {
@@ -706,10 +724,14 @@ export class WhatsAppController {
                     message.fromJSON(data);
                     
                     let me = (data.from === this._user.email);
+
+                    let idElm = this.el.panelMessagesContainer.querySelector('#_' + data.id);
+
+                    let view = message.getViewElement(me);
                     
                     // verificando se não existe uma mensagem com o mesmo id
                     // para atualizar na view só o que for necessário.
-                    if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
+                    if (!idElm) {
 
                         if (!me) {
                             doc.ref.set({
@@ -718,20 +740,16 @@ export class WhatsAppController {
                                 merge: true
                             });
                         }
-    
-                        let view = message.getViewElement(me);
-    
-                        this.el.panelMessagesContainer.appendChild(view);
+
+                        this.el.panelMessagesContainer.appendChild(view);                        
                     } else {
 
-                        let view = message.getViewElement(me);
-
-                        this.el.panelMessagesContainer.querySelector('#_' + data.id).innerHTML = view.innerHTML;
+                        idElm.innerHTML = view.innerHTML;
                     } 
                     
-                    if (this.el.panelMessagesContainer.querySelector('#_' + data.id) && me) {
+                    if (idElm && me) {
 
-                        let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
+                        let msgEl = idElm;
                         msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
                     }
                 });
