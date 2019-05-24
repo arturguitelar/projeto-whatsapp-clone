@@ -12,3 +12,5 @@
 .vscode
 .eslintcache
 package-lock.json
+
+.firebaserc

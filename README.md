@@ -52,9 +52,44 @@ Link para o repositório que contém os arquivos iniciais indicados no curso: [l
 - Firebase Cloud Firestore e Firebase Storage.
 - MVC.
 - DAO.
+- Firebase Cloud Functions. *2
 
-*1 - Obs: O arquivo da classe "FirebaseConfig.js" (onde coloquei as configurações do meu projeto no Firebase) não será adicionado ao projeto no github por motivos de segurança.
+*1 - Obs: O arquivo da classe "FirebaseConfig.js" não será adicionado ao projeto no github por motivos de segurança.
+Por questões de simplicidade, é apenas uma classe criada na pasta "utils" com a configuração de conexão par ao projeto no Firebase direto no construtor. Algo como isto:
 
+```
+export class FirebaseConfig {
+
+    constructor() {
+        this._config = {
+            apiKey: "api-key",
+            authDomain: "auth-domain",
+            databaseURL: "databaseURL",
+            projectId: "project-id",
+            storageBucket: "storage-bucket",
+            messagingSenderId: "messaging-sender-id",
+            appId: "app-id"
+        };
+    }
+
+    get config() {
+
+        return this._config;
+    }
+}
+```
+
+*2 - Na etapa em que envolve a criação de setup para deploy de funções no firebase, a ferramenta pede indicação para qual projeto o deploy pertence. Isso acaba gerando um arquivo ".firebaserc" que contém a id do projeto no Firebase. Logo, coloquei este arquivo no .gitignore.
+
+Este arquivo deve ser recriado na pasta raiz com a seguinte configuração, caso a ferramenta do firebase não o crie automaticamente:
+
+```
+{
+  "projects": {
+    "default": "project-id"
+  }
+}
+```
 
 > Em progresso...
 
