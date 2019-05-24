@@ -1,6 +1,7 @@
 import { Model } from "./Model";
 import { Firebase } from "../utils/Firebase";
 import { Format } from "../utils/Format";
+import { Upload } from "../utils/Upload";
 
 export class Message extends Model {
 
@@ -68,24 +69,7 @@ export class Message extends Model {
      * @return {Promise} Upload do arquivo.
      */
     static upload(file, from) {
-
-        return new Promise((s, f) => {
-            
-            // fazendo upload do arquivo para o Firestore
-            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
-    
-            uploadTask.on('state_changed', e => {
-                console.info('upload', e);
-            }, err => {
-                f(err);
-            }, () => {
-                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-
-                    s(downloadURL);
-                });
-            });
-
-        })
+        return Upload.send(file, from);
     }
 
     /**

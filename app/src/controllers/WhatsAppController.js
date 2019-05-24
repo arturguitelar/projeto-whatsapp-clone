@@ -8,6 +8,7 @@ import { Message } from '../models/Message';
 import { Chat } from '../models/Chat';
 import { Base64 } from '../utils/Base64';
 import { ContactsController } from './ContactsController';
+import { Upload } from '../utils/Upload';
 
 export class WhatsAppController {
     
@@ -214,6 +215,22 @@ export class WhatsAppController {
         this.el.photoContainerEditProfile.on('click', e => {
             // força um click no input
             this.el.inputProfilePhoto.click();
+        });
+
+        this.el.inputProfilePhoto.on('change', e => {
+
+            if (this.el.inputProfilePhoto.files.length > 0) {
+
+                let file = this.el.inputProfilePhoto.files[0];
+
+                Upload.send(file, this._user.email).then(downloadURL => {
+                    
+                    this._user.photo = downloadURL;
+                    this._user.save().then(() => {
+                        this.el.btnClosePanelEditProfile.click();
+                    });
+                });
+            }
         });
 
         this.el.inputNamePanelEditProfile.on('keypress', e => {
