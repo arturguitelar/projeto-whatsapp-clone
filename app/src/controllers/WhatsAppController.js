@@ -14,12 +14,66 @@ export class WhatsAppController {
     
     constructor() {
         
+        this._active = true;
         this._firebase = new Firebase();
 
         this.initAuth();
         this.elementsPrototype();
         this.loadElements();
         this.initEvents();
+        this.checkNotifications();
+    }
+
+    /**
+     * Checa se o navegador tem permissão de notificação e
+     * mostra uma mensagem html para o usuário solicitando
+     * permissão.
+     */
+    checkNotifications() {
+
+        if (typeof Notification === 'function') {
+
+            if (Notification.permission !== 'granted') {
+                this.el.alertNotificationPermission.show();
+            } else {
+                this.el.alertNotificationPermission.hide();
+            }
+
+            this.el.alertNotificationPermission.on('click', e => {
+                
+                Notification.requestPermission(permission => {
+
+                    this.el.alertNotificationPermission.hide();
+                    console.info('Notificações permitidas!');
+                });
+            });
+        }
+    }
+
+    /**
+     * Notifica o usuário sobre uma nova mensagem.
+     * @param {*} data Dados da mensagem.
+     */
+    notification(data) {
+
+        if (Notification.permission === 'granted' && !this._active) {
+            
+            let n = new Notification(this._contactActive.name, {
+
+                icon: this._contactActive.photo,
+                body: data.content
+            });
+
+            // toca o som da notificação
+            let sound = new Audio('./audio/alert.mp3');
+            sound.currentTime = 0;
+            sound.play();
+
+            // fecha a notificação após 3s.
+            setTimeout(() => {
+                if (n) n.close();
+            }, 3000);
+        }
     }
 
     /**
@@ -87,9 +141,6 @@ export class WhatsAppController {
                 
                 let contact = doc.data();
                 let div = document.createElement('div');
-
-                console.log('doc', doc);
-                console.log('contact', contact);
 
                 div.className = 'contact-item';
 
@@ -186,6 +237,16 @@ export class WhatsAppController {
      * Inicia todos os eventos.
      */
     initEvents() {
+
+        /* === Eventos para as notificações de mensagem === */
+        window.addEventListener('focus', e => {
+            this._active = true;
+        });
+
+        window.addEventListener('blur', e => {
+            this._active = false;
+        });
+        /* === Fim - Eventos para as notificações de mensagem === */
 
         /* === Painel de Perfil do lado esquerdo. === */
 
@@ -734,6 +795,8 @@ export class WhatsAppController {
 
         this.el.panelMessagesContainer.innerHTML = '';
 
+        this._messageReceived = [];
+
         // mostrando as mensagens
         Message.getRef(this._contactActive.chatId)
             .orderBy('timeStamp')
@@ -752,10 +815,17 @@ export class WhatsAppController {
                     data.id = doc.id;
 
                     let message = new Message();
-
-                    message.fromJSON(data);
                     
+                    message.fromJSON(data);
+
                     let me = (data.from === this._user.email);
+
+                    // enviando notificação de mensagem
+                    if (!me && this._messageReceived.filter(id => id === data.id).length === 0) {
+
+                        this.notification(data);
+                        this._messageReceived.push(data.id);
+                    }
 
                     let idElm = this.el.panelMessagesContainer.querySelector('#_' + data.id);
 
