@@ -88,6 +88,9 @@ export class WhatsAppController {
                 let contact = doc.data();
                 let div = document.createElement('div');
 
+                console.log('doc', doc);
+                console.log('contact', contact);
+
                 div.className = 'contact-item';
 
                 div.innerHTML = `
